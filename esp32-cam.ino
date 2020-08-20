@@ -368,7 +368,8 @@ bool init_sdcard() {
 }
 
 bool init_sensor(){
-  Wire.begin(3, 1);
+  Wire.begin(13, 14);
+  //Wire.begin(3, 1);
 
   sensor.setTimeout(500);
   if (!sensor.init())
@@ -601,7 +602,7 @@ void loop()
   }
   if (sensor.readRangeContinuousMillimeters() < 250) {
     //Serial.println(sensor.readRangeContinuousMillimeters());
-    save_photo();
+    //save_photo();
   }
 
   
