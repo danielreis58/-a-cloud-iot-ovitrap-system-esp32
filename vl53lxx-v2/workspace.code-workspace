@@ -1,0 +1,12 @@
+{
+  "folders": [
+	{
+		"path": "../.."
+	},
+	{
+		"name": "vl53lxx-v2",
+		"path": "."
+	}
+],
+  "settings": {}
+}
