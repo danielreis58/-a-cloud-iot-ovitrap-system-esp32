@@ -13,11 +13,11 @@
 int sensor1, sensor2, sensor3, sensor4, sensor5;
 
 // set the pins to shutdown
-#define SHT_LOX1 D4
-#define SHT_LOX2 D5
-#define SHT_LOX3 D6
-#define SHT_LOX4 D7
-#define SHT_LOX5 D3
+#define SHT_LOX1 D7
+#define SHT_LOX2 D6
+#define SHT_LOX3 D5
+#define SHT_LOX4 D3
+#define SHT_LOX5 D4
 
 //Sensor
 Adafruit_VL53L0X lox1 = Adafruit_VL53L0X();
@@ -42,10 +42,10 @@ WiFiClient client;
 // String password = "rafa1D606";
 String ssid = "TREME";
 String password = "tanoquadro";
-String id = "3e8aD6eD67-d4c8-4323-af8f-1d116D6880671";
+String id = "208cb07a-6f61-4a85-8091-7089197c0b2f";
 int range = 100;
 
-String url = "http://18.22D6.155.62:8001/catch/";
+String url = "http://18.229.155.62:8001/catch/";
 
 void setID()
 {
@@ -121,6 +121,23 @@ void setID()
   delay(10);
 }
 
+void callAPI()
+{
+  Serial.print("Calling API: ");
+  Serial.println(String(url) + String(id));
+
+  http.begin(client, String(url) + String(id));
+  http.addHeader("Content-Type", "application/json");
+  String httpRequestData = "{\"number\":1}";
+  int httpResponseCode = http.POST(httpRequestData);
+  if (httpResponseCode > 0)
+  {
+    Serial.print("HTTP Response code: ");
+    Serial.println(httpResponseCode);
+  }
+  http.end();
+}
+
 void readSensors()
 {
 
@@ -160,6 +177,13 @@ void readSensors()
   Serial.print(sensor5);
   Serial.println("mm");
 
+  int minimo = 0;
+  int maximo = 85;
+
+  if ((sensor1 > minimo && sensor1 < maximo) || (sensor2 > minimo && sensor2 < maximo) || (sensor3 > minimo && sensor3 < maximo) || (sensor4 > minimo && sensor4 < maximo) || (sensor5 > minimo && sensor5 < maximo))
+  {
+    callAPI();
+  }
 }
 
 void connectToWifi(String ssid, String password)
@@ -181,23 +205,6 @@ void connectToWifi(String ssid, String password)
   Serial.println(WiFi.localIP());
 }
 
-void callAPI()
-{
-  Serial.print("Calling API: ");
-  Serial.println(String(url) + String(id));
-
-  http.begin(client, String(url) + String(id));
-  http.addHeader("Content-Type", "application/json");
-  String httpRequestData = "{\"number\":1}";
-  int httpResponseCode = http.POST(httpRequestData);
-  if (httpResponseCode > 0)
-  {
-    Serial.print("HTTP Response code: ");
-    Serial.println(httpResponseCode);
-  }
-  http.end();
-}
-
 void setup()
 {
   Serial.begin(9600);
@@ -208,7 +215,6 @@ void setup()
   pinMode(SHT_LOX3, OUTPUT);
   pinMode(SHT_LOX4, OUTPUT);
   pinMode(SHT_LOX5, OUTPUT);
-
 
   digitalWrite(SHT_LOX1, LOW);
   digitalWrite(SHT_LOX2, LOW);
